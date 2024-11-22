@@ -1,4 +1,16 @@
-const { readFile, writeFile } = require("./fileManager");
+const express = require("express");
+const path = require("path");
+const { router: recipesRouter } = require("./router/recipes");
 
-readFile("src/public/readMe.md");
-writeFile("src/public/readMe.md", "Hello World teddy, how are you?");
+const app = express();
+
+const publicDirectoryPath = path.join(__dirname, "./public");
+app.use(express.static(publicDirectoryPath));
+
+app.use("/api/v1/recipes", recipesRouter);
+
+const PORT = process.env.PORT || 3002;
+
+app.listen(PORT, () => {
+  console.log(`Listening to http://localhost:${PORT}`);
+});
