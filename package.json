@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "express": "^4.21.1",
+    "express-validator": "^7.2.0",
     "nexpress": "^1.0.2"
   },
   "devDependencies": {

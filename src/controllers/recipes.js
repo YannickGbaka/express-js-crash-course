@@ -1,4 +1,5 @@
 const service = require("../services/recipes");
+const { query, validationResult, matchedData } = require("express-validator");
 
 const getAll = async (req, res, next) => {
   try {
@@ -10,7 +11,17 @@ const getAll = async (req, res, next) => {
 };
 
 const getById = async (req, res, next) => {
-  const { id } = req.params;
+  const response = validationResult(req);
+  if (!response.isEmpty())
+    return res.status(400).json({ errors: response.array() });
+
+  const data = matchedData(req);
+
+  const parsedId = parseInt(data.id);
+  if (isNaN(parsedId))
+    return res
+      .status(400)
+      .json({ message: "Make sure '" + id + "' is a number" });
   try {
     const recipe = await service.getById(id);
     if (!recipe) {
@@ -24,6 +35,11 @@ const getById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
+    const validatedData = validationResult(req);
+    if (!validatedData.isEmpty()) {
+      return res.status(400).json({ errors: validatedData.array() });
+    }
+    console.log(matchedData(req));
     const {
       name,
       healthLabels,
