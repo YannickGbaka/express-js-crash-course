@@ -39,7 +39,7 @@ const create = async (req, res, next) => {
     if (!validatedData.isEmpty()) {
       return res.status(400).json({ errors: validatedData.array() });
     }
-    console.log(matchedData(req));
+    
     const {
       name,
       healthLabels,
