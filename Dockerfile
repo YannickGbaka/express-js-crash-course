@@ -1,4 +1,4 @@
-from node:20
+FROM node:20
 
 WORKDIR /app
 
@@ -10,6 +10,8 @@ COPY src ./src
 
 COPY db ./db
 
+EXPOSE 3002
+
+
 CMD ["npm", "run", "dev"]
 
-EXPOSE 3002
