@@ -1,29 +1,34 @@
 const passport = require("passport");
-
+const { findByUsername, findById } = require("../services/users");
 const { Strategy } = require("passport-local");
 
-const users = [
-  {
-    id: 1,
-    username: "admin",
-    password: "admin",
-  },
-  {
-    id: 2,
-    username: "user",
-    password: "user",
-  },
-];
+passport.serializeUser((user, done) => {
+  console.log("Inside serializer \n");
+  console.log(user);
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  console.log("Inside deserializer \n" + id);
+  try {
+    const user = findById(id);
+    if (!user) throw new Error("User not found");
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+});
 
 passport.use(
-  new Strategy((username, password, done) => {
+  new Strategy({ usernameField: "email" }, (email, password, done) => {
     try {
-      const findUser = users.find((user) => user.username === username);
-      if (!findUser) {
+      const user = findByUsername(email);
+      if (!user) {
         throw new Error("User not found");
-      } else if (findUser.password != password)
+      } else if (user.password != password) {
         throw new Error("Wrong password");
-      done(null, findUser);
+      }
+      done(null, user);
     } catch (e) {
       done(e, null);
     }
