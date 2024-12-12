@@ -1,6 +1,5 @@
 const express = require("express");
 const path = require("path");
-const session = require("express-session");
 const passport = require("passport");
 
 const { router: recipesRouter } = require("./router/recipes");
@@ -25,6 +24,7 @@ app.use(
 
 const publicDirectoryPath = path.join(__dirname, "./public");
 app.use(express.static(publicDirectoryPath));
+
 app.get("/", (req, res) => {
   req.session.isAuthenticated = true;
   req.sessionStore.set();
@@ -33,7 +33,6 @@ app.get("/", (req, res) => {
   res.send("Hello world");
 });
 
-app.use("/api/v1/auth", authenticationRouter);
 app.use(
   session({
     secret: "teddy",
@@ -47,6 +46,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use("/api/v1/auth", authenticationRouter);
 
 app.use("/api/v1/recipes", recipesRouter);
 app.use("/api/v1/products", productsRouter);
