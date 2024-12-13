@@ -5,10 +5,18 @@ const passport = require("passport");
 const { router: recipesRouter } = require("./router/recipes");
 const { router: productsRouter } = require("./router/products");
 const authenticationRouter = require("./router/authentication");
+const userRouter = require("./router/users");
+
+const mongoose = require("mongoose");
+mongoose
+  .connect("mongodb://localhost:27017/crash-course")
+  .then(() => console.log("DB connected"))
+  .catch((err) => console.log(err));
 
 const session = require("express-session");
 
 const app = express();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -43,6 +51,8 @@ app.use(
     },
   })
 );
+
+app.use("/api/v1/users", userRouter);
 
 app.use(passport.initialize());
 app.use(passport.session());

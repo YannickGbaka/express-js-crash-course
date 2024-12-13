@@ -8,10 +8,10 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser(async (id, done) => {
   console.log("Inside deserializer \n" + id);
   try {
-    const user = findById(id);
+    const user = await findById(id);
     if (!user) throw new Error("User not found");
     done(null, user);
   } catch (err) {
@@ -20,17 +20,20 @@ passport.deserializeUser((id, done) => {
 });
 
 passport.use(
-  new Strategy({ usernameField: "email" }, (email, password, done) => {
-    try {
-      const user = findByUsername(email);
-      if (!user) {
-        throw new Error("User not found");
-      } else if (user.password != password) {
-        throw new Error("Wrong password");
+  new Strategy(
+    { usernameField: "username" },
+    async (username, password, done) => {
+      try {
+        const user = await findByUsername(username);
+        if (!user) {
+          throw new Error("User not found");
+        } else if (user.password != password) {
+          throw new Error("Wrong password");
+        }
+        done(null, user);
+      } catch (e) {
+        done(e, null);
       }
-      done(null, user);
-    } catch (e) {
-      done(e, null);
     }
-  })
+  )
 );
