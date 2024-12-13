@@ -1,21 +1,10 @@
-const users = [
-  {
-    id: 1,
-    username: "admin",
-    password: "admin",
-  },
-  {
-    id: 2,
-    username: "user",
-    password: "user",
-  },
-];
+const User = require("../mongoose/schemas/user");
 
 const findById = (id) => {
-  return users.find((user) => user.id == id);
+  return User.findById(id);
 };
-const findByUsername = (username) => {
-  return users.find((user) => user.username === username);
+const findByUsername = async (username) => {
+  return await User.findOne({ username });
 };
 
 module.exports = {
