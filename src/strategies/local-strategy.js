@@ -1,6 +1,7 @@
 const passport = require("passport");
 const { findByUsername, findById } = require("../services/users");
 const { Strategy } = require("passport-local");
+const { comparePassword } = require("../utils/helpers");
 
 passport.serializeUser((user, done) => {
   console.log("Inside serializer \n");
@@ -27,7 +28,7 @@ passport.use(
         const user = await findByUsername(username);
         if (!user) {
           throw new Error("User not found");
-        } else if (user.password != password) {
+        } else if (!comparePassword(password, user.password)) {
           throw new Error("Wrong password");
         }
         done(null, user);
