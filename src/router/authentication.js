@@ -55,7 +55,7 @@ router.post("/logout", (request, response) => {
   if (!request.user) return response.status(401).json("Unauthenticated");
   request.logout((err) => {
     if (err) return response.status(400);
-    response.send(200);
+    response.sendStatus(200);
   });
 });
 module.exports = router;
