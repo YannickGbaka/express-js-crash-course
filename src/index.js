@@ -14,6 +14,7 @@ mongoose
   .catch((err) => console.log(err));
 
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 
 const app = express();
 
@@ -27,6 +28,9 @@ app.use(
     cookie: {
       maxAge: 60000 * 60,
     },
+    store: MongoStore.create({
+      client: mongoose.connection.getClient(),
+    }),
   })
 );
 
