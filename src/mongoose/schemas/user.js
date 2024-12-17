@@ -11,6 +11,12 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.String,
     required: true,
   },
+  federatedCredentials: [
+    {
+      provider: String,
+      subject: String,
+    },
+  ],
 });
 
 // convert it to a mongo collection

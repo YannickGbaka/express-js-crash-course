@@ -4,6 +4,8 @@ const { body, validationResult, matchedData } = require("express-validator");
 const passport = require("passport");
 require("../strategies/local-strategy");
 
+require("../strategies/google-strategy");
+
 const registeredUsers = [
   {
     username: "admin",
@@ -44,12 +46,28 @@ const router = new Router();
 router.post("/login", passport.authenticate("local"), (req, res) => {
   res.json({ message: "Ok" }).status(200);
 });
+
+router.get("/google/login", (request, response, next) => {
+  if (request.session.passport) return response.redirect("/");
+  response.render("login");
+});
+
 router.get("/status", (req, res) => {
   console.log(req.session);
   return req.user
     ? res.json(req.user)
     : res.status(401).json({ message: "Not authenticated" });
 });
+
+router.get("/login/federated/google", passport.authenticate("google"));
+
+router.get(
+  "/google/redirect",
+  passport.authenticate("google", {
+    successRedirect: "/",
+    failureRedirect: "/api/v1/auth/google/login",
+  })
+);
 
 router.post("/logout", (request, response) => {
   if (!request.user) return response.status(401).json("Unauthenticated");
