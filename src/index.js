@@ -31,6 +31,7 @@ app.use(
 );
 
 const publicDirectoryPath = path.join(__dirname, "./public");
+console.log(publicDirectoryPath);
 app.use(express.static(publicDirectoryPath));
 
 app.get("/", (req, res) => {
