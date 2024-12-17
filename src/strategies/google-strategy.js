@@ -1,7 +1,25 @@
 const User = require("../mongoose/schemas/user");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oidc");
+const { hashPassword } = require("../utils/helpers");
 require("dotenv").config();
+
+passport.serializeUser((user, done) => {
+  console.log("Inside serializer \n");
+  console.log(user);
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  console.log("Inside deserializer \n" + id);
+  try {
+    const user = await findById(id);
+    if (!user) throw new Error("User not found");
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+});
 
 passport.use(
   new GoogleStrategy(
