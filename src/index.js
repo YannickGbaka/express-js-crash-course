@@ -8,14 +8,19 @@ const authenticationRouter = require("./router/authentication");
 const userRouter = require("./router/users");
 
 const mongoose = require("mongoose");
+require("dotenv").config();
 mongoose
   .connect("mongodb://localhost:27017/crash-course")
   .then(() => console.log("DB connected"))
   .catch((err) => console.log(err));
 
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 
 const app = express();
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,6 +32,7 @@ app.use(
     cookie: {
       maxAge: 60000 * 60,
     },
+    store: MongoStore.create({ client: mongoose.connection.getClient() }),
   })
 );
 
